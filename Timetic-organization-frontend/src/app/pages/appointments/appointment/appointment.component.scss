@@ -1,0 +1,19 @@
+@import '../../../@theme/styles/themes';
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+
+@include nb-install-component() {
+    nb-card {
+      transform: translate3d(0, 0, 0);
+    }
+    dt {
+      margin: 0rem 1rem;
+    }
+    nb-card-header {
+        background-color: rgb(75, 174, 255);
+    }
+}
+
+.details {
+  margin-right: 1rem;
+}

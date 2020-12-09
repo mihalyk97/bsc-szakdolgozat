@@ -1,0 +1,52 @@
+<div>
+    <nb-card>
+        <nb-card-header>Ügyfél</nb-card-header>
+        <nb-card-body>
+            <form>
+                <div class="form-group row">
+                    <label for="name" class="label col-3 col-form-label">Név</label>
+                    <div class="col-9">
+                        <input name="name" [(ngModel)]="client.name" type="text" nbInput fullWidth id="name"
+                            placeholder="Név">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="email" class="label col-3 col-form-label">E-mail cím</label>
+                    <div class="col-9">
+                        <input name="email" [(ngModel)]="client.email" type="email" nbInput fullWidth id="email"
+                            placeholder="E-mail cím" #email="ngModel" [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : 'basic'"            pattern=".+@.+\..+"
+                            [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+                            <ng-container *ngIf="email.invalid && email.touched">
+                                <p class="caption status-danger" *ngIf="email.errors?.pattern">
+                                  Valós email címet adjon meg!
+                                </p>
+                            </ng-container>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="phone" class="label col-3 col-form-label">Telefonszám</label>
+                    <div class="col-9">
+                        <input name="phone" [(ngModel)]="client.phone" type="text" nbInput fullWidth id="phone"
+                            placeholder="Telefonszám">
+                    </div>
+                </div>
+                    <div [formGroup]="personalInfosForm">
+                            <div class="form-group row" *ngFor="let field of personalInfoFields; let i=index">
+                                <label for="{{field}}" class="label col-4 col-form-label">{{ field }}</label>
+                                <div class="col-8">
+                                    <input class="form-control" id="{{field}}" [formControlName]="field" ngDefaultControl nbInput placeholder={{field}}>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
+                            <button (click)="save()" nbButton status="primary">Mentés</button>
+                        </div>
+                        <div class="col">
+                            <button (click)="close()" nbButton status="danger">Mégsem</button>
+                        </div>
+                    </div>
+            </form>
+        </nb-card-body>
+    </nb-card>
+</div>

@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="row d-flex justify-content-around">
+        <div class="col-md-3 d-flex">
+            <nb-card class="flex-fill" status="success">
+                <nb-card-header>Mai időpontok</nb-card-header>
+                <nb-card-body>
+                    <h2>{{ overview?.appointmentsToday }}</h2>
+                </nb-card-body>
+            </nb-card>
+        </div>
+        <div class="col-md-3 d-flex">
+            <nb-card class="flex-fill" status="danger">
+                <nb-card-header>Mai online konzultációk</nb-card-header>
+                <nb-card-body>
+                    <h2>{{ overview?.onlineAppointmentsToday }}</h2>
+                </nb-card-body>
+            </nb-card>
+        </div>
+        <div class="col-md-3 d-flex">
+            <nb-card class="flex-fill" status="success">
+                <nb-card-header>Mai aktív alkalmazottak</nb-card-header>
+                <nb-card-body>
+                    <h2>{{ overview?.activeEmployeesToday }}</h2>
+                </nb-card-body>
+            </nb-card>
+        </div>
+        <div class="col-md-3 d-flex">
+            <nb-card class="flex-fill" status="danger">
+                <nb-card-header>Regisztrált ügyfelek</nb-card-header>
+                <nb-card-body>
+                    <h2>{{ overview?.registeredUsers }}</h2>
+                </nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+    <div class="row">
+        <nb-card class="col-sm">
+            <nb-card-body class="row">
+                <div class="calendar-container col-sm-6 d-flex">
+                    <nb-calendar class ="flex-fill" [(date)]="date" (dateChange)="handleDateChange($event)" showWeekNumber></nb-calendar>
+                </div>
+                <div class="day-details-container col-sm-5 d-flex">
+                    <nb-card class="list-card flex-fill" size="small">
+                        <nb-card-header>
+                            <span class="subtitle">
+                                Időpontok ekkor: {{date | date:'longDate'}}
+                            </span>
+                        </nb-card-header>
+                        <nb-list>
+                            <nb-list-item class="row" *ngIf="appointments.length == 0">
+                                <div class="col">
+                                    <div class="row">
+                                        A kiválasztott napra nincs tervezett időpont
+                                    </div>
+                                </div>
+                            </nb-list-item>
+                            <nb-list-item (click)="appointmentSelected(appointment)" class="row" *ngFor="let appointment of appointments">
+                                <div class="col">
+                                    <div class="row">
+                                        <h6>{{ appointment.isPrivate ? "Privát időpont" : appointment.activity.name }}</h6>
+                                    </div>
+                                    <div class="row">{{ appointment.employee.name }}</div>
+                                    <div class="row">{{ appointment.startTime || '' | date:'HH:mm'}} - {{ appointment.endTime || '' | date:'HH:mm'}}</div>
+                                </div>
+                            </nb-list-item>
+                        </nb-list>
+                    </nb-card>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>

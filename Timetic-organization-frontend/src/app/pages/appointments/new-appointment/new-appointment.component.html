@@ -1,0 +1,98 @@
+<div >
+    <nb-card class="new-appointment-content">
+        <nb-card-header>Időpont</nb-card-header>
+        <nb-card-body>
+            <form class="new-appointment-container">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="date" class="label col-3 col-form-label">Dátum</label>
+                            <div class="col-9 d-flex">
+                                <input [disabled]="disabled" fullWidth nbInput [(ngModel)]="date" name="date" placeholder="Dátum" [nbDatepicker]="datePicker" onKeyDown="return false">
+                                <nb-datepicker [min]="minDate" #datePicker></nb-datepicker>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="time" class="label col-3 col-form-label">Időpont</label>
+                            <div class="col-9 d-flex align-items-center">
+                                    <input nbInput fullWidth [disabled]="disabled" [(ngModel)]="hours" name="hours" type="number" max="23" min="0" onKeyDown="return false"/>
+                                    :
+                                    <input nbInput fullWidth [disabled]="disabled" [(ngModel)]="minutes" name="minutes" type="number" max="59" min="0" step="5" onKeyDown="return false"/>    
+                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="duration" class="label col-3 col-form-label">Időtartam (perc)</label>
+                            <div class="col-9">                    
+                                <input nbInput fullWidth [disabled]="disabled" [(ngModel)]="duration" name="duration" type="number" placeholder="Időtartam" step="5" min="0" onKeyDown="return false"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="employee-select" class="label col-3 col-form-label">Alkalmazott</label>
+                            <div class="col-9 d-flex">
+                            <nb-select *ngIf="appointmentCreationData" [disabled]="disabled" class="flex-fill" [(selected)]="appointment.employee" name="employee-select" (selectedChange)="employeeSelected($event)" id="employee-select">
+                                <nb-option  *ngFor="let employee of appointmentCreationData?.employees" [value]="employee">{{ employee.name }}</nb-option>
+                              </nb-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="activity-select" class="col-3 label col-form-label">Tevékenység</label>
+                            <div class="col-9 d-flex">
+                                  <nb-select id="activity-select" [disabled]="disabled" class="flex-fill" *ngIf="activities.length != 0" name="activity-select" [(selected)]="appointment.activity" (selectedChange)="activitySelected($event)">
+                                    <nb-option *ngFor="let activity of activities" [value]="activity"> {{ activity.name }} </nb-option>
+                                  </nb-select>
+                            </div>
+                          </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="client" class="label col-3 col-form-label">Ügyfél</label>
+                            <div class="col-9 d-flex">
+                            <nb-select [disabled]="disabled" class="flex-fill" id="client" name="client" (selectedChange)="clientSelected($event)" [(selected)]="appointment.client.id">
+                                <nb-option  *ngFor="let client of appointmentCreationData?.clients" [value]="client.id">{{ client.name }}</nb-option>
+                              </nb-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="place" class="label col-3 col-form-label">Helyszín</label>
+                            <div class="col-9 d-flex">
+                            <nb-select [disabled]="disabled" class="flex-fill" id="place" name="place" [(ngModel)]="appointment.place">
+                                <nb-option *ngFor="let place of appointmentCreationData?.places" [value]="place">{{ place }}</nb-option>
+                              </nb-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="price" class="label col-3 col-form-label">Ár</label>
+                            <div class="col-9">
+                                <input [disabled]="disabled" type="number" nbInput fullWidth id="price" name="price" placeholder="Ár" [(ngModel)]="appointment.price" onKeyDown="return false" min="0" step="100">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="online" class="label col-3 col-form-label">Online időpont</label>
+                            <div class="col-9 d-flex">
+                                <nb-checkbox [disabled]="disabled" id="online" name="online" [(ngModel)]="appointment.online" ></nb-checkbox>
+                            </div>
+                        </div>
+        
+                        <div class="form-group row">
+                            <label class="col-3 label">Megjegyzés</label>
+                            <div class="col-9">
+                                <textarea [disabled]="disabled" rows="2" name="note" nbInput fullWidth shape="round" [(ngModel)]="appointment.note" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group row">
+                    <div class="col">
+                        <button [disabled]="disabled" (click)="save()" nbButton status="primary">Mentés</button>
+                    </div>
+                    <div class="col">
+                        <button (click)="close()" nbButton status="danger">Mégsem</button>
+                    </div>
+                </div>
+            </form>
+        </nb-card-body>
+    </nb-card>
+</div>

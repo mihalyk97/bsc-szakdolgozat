@@ -1,0 +1,44 @@
+version: '3.7'
+
+volumes:
+  org_db_data:
+
+services:
+  org_backend:
+    build:
+      context: .
+    environment:
+      - LOG_LEVEL
+      - DATABASE_HOST
+      - DATABASE_PORT
+      - DATABASE_NAME
+      - DATABASE_USERNAME
+      - DATABASE_PASSWORD
+      - SSL_CERT
+      - SSL_KEY
+      - SSL_HOSTNAME
+      - SSL_DIR
+      - SMTP_URL
+      - SMTP_EMAIL
+      - SMTP_PASSWORD
+      - SERVER_URL
+      - JWT_APP_SECRET
+    restart: on-failure
+    depends_on:
+      - org_db
+    volumes:
+      - ${SSL_DIR}:/etc/letsencrypt
+    ports:
+      - '8888:8080'
+    command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
+  org_db:
+    image: postgres:12-alpine
+    volumes:
+      - org_db_data:/var/lib/postgresql/data/pgdata
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - '5388:5432'

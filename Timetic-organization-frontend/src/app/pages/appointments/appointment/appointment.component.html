@@ -1,0 +1,40 @@
+<div class="row d-flex">
+    <nb-card class="flex-fill">
+        <nb-card-header>
+            <div class="row">
+                <dl class="col">
+                    <h6>{{ appointment.isPrivate ? "Privát időpont" :appointment.activity.name }}</h6>
+                </dl>
+                <div class="col d-flex justify-content-end">
+                    <p>{{ appointment.startTime || '' | date:'yyyy. MM. dd. HH:mm'}} - {{ appointment.endTime || '' | date:'yyyy. MM. dd. HH:mm'}}</p>
+                </div>
+            </div>
+            
+        </nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <dl class="col d-flex">
+                    <dt>Szervező:</dt>
+                    <dd>{{ appointment.employee.name }}</dd>
+                </dl>
+                <dl class="col d-flex justify-content-end" *ngIf="!appointment.isPrivate">
+                    <dt>Online konzultáció:</dt>
+                    <dd>{{ appointment.online ? "Igen" : "Nem" }}</dd>
+                </dl>
+            </div>
+            <div class="row" *ngIf="!appointment.isPrivate">
+                <dl class="col d-flex">
+                    <dt>Ügyfél:</dt>
+                    <dd>{{ appointment.client.name }}</dd>
+                </dl>
+                <div class="col">
+                    
+                </div>
+                <div class="col d-flex justify-content-end" *ngIf="!appointment.isPrivate">
+                    <button class="details" (click)="openAppointment()" nbButton status="info">Részletek</button>
+                    <button (click)="cancelAppointment()" nbButton status="danger">Lemondás</button>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</div>

@@ -1,0 +1,4 @@
+{
+    "adminName": "",                                // adminisztrátor neve
+    "adminEmail": ""      // az adminisztrátor email címe, ezzel fog tudni az adminisztrátor belépni az adminisztrációs frontend-re (első használat előtt elfelejtett jelszó kérésével lehet jelszót beállítani)
+}

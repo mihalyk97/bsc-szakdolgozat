@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="d-flex justify-content-end header">
+    <button (click)="createNewEmployee($event)" nbButton status="success">Új alkalmazott</button>
+  </div>
+  <nb-card>
+    <nb-card-header>
+      Alkalmazottak
+    </nb-card-header>
+
+    <nb-card-body>
+      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)"
+        (userRowSelect)="onRowSelection($event)">
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>
+
+</div>

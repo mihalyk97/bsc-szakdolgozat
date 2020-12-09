@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-lg-6">
+    <nb-card>
+      <nb-card-header>A szervezet adatai</nb-card-header>
+      <nb-card-body>
+        <form>
+          <div class="form-group row">
+            <label for="name" class="label col-sm-3 col-form-label">Név</label>
+            <div class="col-sm-9">
+              <input type="text" [(ngModel)]="organization.name" nbInput fullWidth id="name" name="name"
+                placeholder="Név">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="details" class="label col-sm-3 col-form-label">Leírás</label>
+            <div class="col-sm-9">
+              <textarea rows="5" [(ngModel)]="organization.details" name="details" nbInput fullWidth
+                placeholder="Leírás"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-sm-3 col-sm-9">
+              <nb-checkbox [(ngModel)]="organization.canClientContactEmployees" name="can-contact">Az ügyfelek
+                kapcsolatba léphetnek az alkalmazottakkal</nb-checkbox>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="jitsi" class="label col-sm-3 col-form-label">Jitsi szerver címe</label>
+            <div class="col-sm-9">
+              <input type="text" [(ngModel)]="organization.jitsiUrl" nbInput fullWidth id="jitsi" name="jitsi"
+                placeholder="Jitsi szerver címe">
+            </div>
+          </div>
+          <div class="row">
+            <label class="label col">Alapértelmezett kapcsolatartó adatai</label>
+          </div>
+          <div class="form-group row">
+            <label for="contact-name" class="label col-sm-3 col-form-label">Név</label>
+            <div class="col-sm-9">
+              <input type="text" [(ngModel)]="organization.defaultContact.name" nbInput fullWidth id="contact-name"
+                name="contact-name" placeholder="Név">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="contact-phone" class="label col-sm-3 col-form-label">Telefonszám</label>
+            <div class="col-sm-9">
+              <input type="tel" [(ngModel)]="organization.defaultContact.phone" name="contact-phone" nbInput fullWidth
+                placeholder="Telefonszám">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="contact-email" class="label col-sm-3 col-form-label">Email</label>
+            <div class="col-sm-9">
+              <input type="email" [(ngModel)]="organization.defaultContact.email" name="contact-email" nbInput fullWidth
+                placeholder="Email">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-sm-3 col-sm-9">
+              <button (click)="onSaveClick($event)" nbButton status="primary">Mentés</button>
+            </div>
+          </div>
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-lg-6">
+    <nb-card>
+      <nb-card-header>Ügyfélhez szükséges adatok</nb-card-header>
+      <nb-card-body>
+        <ng2-smart-table [settings]="clientInfoSettings" [source]="clientInfoSource"
+          (deleteConfirm)="onClientInfoDeleteConfirm($event)" (createConfirm)="onClientInfoCreateConfirm($event)">
+        </ng2-smart-table>
+      </nb-card-body>
+    </nb-card>
+    <nb-card>
+      <nb-card-header>Szervezet címei</nb-card-header>
+      <nb-card-body>
+        <ng2-smart-table [settings]="addressesSettings" [source]="addressesSource"
+          (deleteConfirm)="onAddressesDeleteConfirm($event)" (createConfirm)="onAddressesCreateConfirm($event)">
+        </ng2-smart-table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

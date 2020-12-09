@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="d-flex justify-content-end">
+    <button (click)="createNewAppointment($event)" nbButton status="success">Új időpont</button>
+  </div>
+
+  <nb-list>
+    <nb-list-item class="row" *ngIf="appointments.length == 0">
+      <div class="col">
+          <div class="row">
+              <p>Nem találhatók időpontok. Az &nbsp;</p><b>Új időpont</b><p>&nbsp; gombra kattintva hozhat létre újat.</p>
+          </div>
+      </div>
+  </nb-list-item>
+    <nb-list-item  *ngFor="let appointment of appointments">
+      <ngx-appointment class="flex-fill" [appointment]="appointment" (onDelete)="deleteAppointment($event)" (onDetails)="openAppointmentDetails($event)"></ngx-appointment>
+    </nb-list-item>
+  </nb-list>
+
+</div>

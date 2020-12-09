@@ -1,0 +1,55 @@
+<div class="report-container">
+    <div class="row header">
+        <h6 class="col">Kimutatás időszaka</h6>
+        <div class="col d-flex">
+            <input nbInput placeholder="Időszak" [nbDatepicker]="rangepicker" onKeyDown="return false">
+            <nb-rangepicker #rangepicker [(max)]="max" (rangeChange)="rangeSelected($event)"></nb-rangepicker>
+            
+        </div> 
+        <div class="col d-flex">
+          <button (click)="getReport()" nbButton status="success" *ngIf="fromDate && toDate" >Frissítés</button>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <button printSectionId="toPrint" [useExistingCss]="true" nbButton status="info" ngxPrint >Nyomtatás</button>
+        </div>        
+    </div>
+    <div class="row" id="toPrint">
+        <nb-card>
+          <nb-card-header *ngIf="organizationName">
+            <div class="row">
+              <h2 class="col-sm-6">{{organizationName || ''}}</h2>
+              <h4 class="col-sm-6">{{fromDate || '' | date:'longDate'}} - {{toDate || '' | date:'longDate'}}</h4>
+            </div>
+          </nb-card-header>
+            <nb-card-body>
+              <table [nbTreeGrid]="dataSource" [nbSort]="dataSource" (sort)="updateSort($event)">
+          
+                <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
+                <tr [clickToToggle]="false" nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns"></tr>
+          
+                <ng-container [nbTreeGridColumnDef]="customColumn">
+                  <th nbTreeGridHeaderCell [nbSortHeader]="getSortDirection(customColumn)" *nbTreeGridHeaderCellDef>
+                    {{customColumnTitle}}
+                  </th>
+                  <td nbTreeGridCell *nbTreeGridCellDef="let row">
+                    {{row.data[customColumn]}}
+                  </td>
+                </ng-container>
+          
+                <ng-container *ngFor="let column of defaultColumns; let index = index" [nbTreeGridColumnDef]="column" [showOn]="getShowOn(index)">
+                  <th nbTreeGridHeaderCell [nbSortHeader]="getSortDirection(column)" *nbTreeGridHeaderCellDef>
+                    {{defaultColumnsTitle[index]}}
+                  </th>
+                  <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data[column] || ''}}</td>
+                </ng-container>
+          
+              </table>
+
+              <div>
+                    <h4></h4>
+              </div>
+          
+            </nb-card-body>
+          </nb-card>
+      </div>
+</div>

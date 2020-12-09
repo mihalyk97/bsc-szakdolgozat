@@ -1,0 +1,49 @@
+<div>
+    <nb-card>
+        <nb-card-header>Mód</nb-card-header>
+        <nb-card-body>
+            <form>
+                <div class="form-group row">
+                    <label for="name" class="label col-3 col-form-label">Név</label>
+                    <div class="col-9">
+                        <input name="name" [(ngModel)]="employee.name" type="text" nbInput fullWidth id="name" placeholder="Név">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="email" class="label col-3 col-form-label">E-mail cím</label>
+                    <div class="col-9">
+                        <input name="email" [(ngModel)]="employee.email" type="email" nbInput fullWidth id="email" placeholder="E-mail cím" #email="ngModel"            pattern=".+@.+\..+"
+                        [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : 'basic'" [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+                        <ng-container *ngIf="email.invalid && email.touched">
+                            <p class="caption status-danger" *ngIf="email.errors?.pattern">
+                              Valós email címet adjon meg!
+                            </p>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="phone" class="label col-3 col-form-label">Telefonszám</label>
+                    <div class="col-9">
+                        <input name="phone" [(ngModel)]="employee.phone" type="text" nbInput fullWidth id="phone" placeholder="Telefonszám">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="activities" class="label col-3 col-form-label">Tevékenységek</label>
+                    <div id="activities" class="col-sm-9 d-flex">
+                        <div class="row">
+                            <nb-checkbox class="col-4" *ngFor="let activity of possibleActivities" [checked]="activity" [(checked)]="activity.assignedToEmployee" >{{ activity.name }}</nb-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="offset-sm-1 col-sm-4">
+                        <button (click)="save()" nbButton status="primary">Mentés</button>
+                    </div>
+                    <div class="offset-sm-2 col-sm-4 offset-sm-1">
+                        <button (click)="close()" nbButton status="danger">Mégsem</button>
+                    </div>
+                </div>
+            </form>
+        </nb-card-body>
+    </nb-card>
+</div>

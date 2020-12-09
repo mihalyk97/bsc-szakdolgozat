@@ -1,0 +1,172 @@
+Tesztelési elérhetőségek
+
+A szerver alkalmazások elérhetők az alábbi címeken.
+
+	Központi szerver:      https://optipus.ddns.net:8080
+	Kihelyezett szerver:   https://optipus.ddns.net:8888
+
+Mindkét szerver esetében az előzőleg ismertetett címeket a böngészőben megnyitva a megfelelő webes frontend érhető el. A központi szerverhez tartozó felület a "Fejlesztői adminisztráció", a kihelyezett szerverhez tartozó a "Szervezeti adminisztráció".
+A böngészőben történő bejelentkezésre mindkét esetben az alábbi adatokkal van lehetőség:
+
+	Email:     mihaly.kristof97@gmail.com
+	Jelszó:    Ab123456
+
+A kihelyezett szerverhez tartozó Jitsi szerver is elérhető (https://optipus.ddns.net:8071), de mivel a szobákba csak autentikációt követően lehet belépni, ezért a kihelyezett szerver által generált URL-ek nélkül nem használható.
+
+Telepítési útmutató
+
+Fejlesztés során használt környezetek (verziókkal):
+	Docker Engine: 19.03.13
+	Docker-Compose: 1.27.4, build 40524192
+	Swift-tools: 5.2
+	Xcode: 12.0
+	NPM: 6.14.4
+	Angular CLI: 10.1.1
+	Node: 14.0.0
+
+A platform használatához szükséges minden komponens megfelelő konfigurációja. Az platform szimbolikus neve: Timetic, ezért a szerver alkalmazások (később backend-ek) és a frontend-ek projektjeinek a nevei a Timetic prefixet tartalmazzák.
+A központi szerver alkalmazást a Timetic-developer-backend projekt, a kihelyezett szervert pedig a Timetic-organization-backend projekt tartalmazza (ennek megfelelően a webes frontend-eket pedig rendre a Timetic-developer-frontend és a Timetic-organization-frontend).
+
+Az útmutató docker-compose segítségével történő használatot feltételez és ahhoz nyújt segítséget. 
+
+Mindkét backend-hez mellékelek egy-egy mintaadatokat tartalmazó SQL fájt (dev_backup.sql és org_backup.sql). Ezek használata esetén a "config.json" fájlokat nem kell beállítani, viszont a környezeti változókat igen, valamint a backend-ek indítása előtt el kell indítani az adatbázisokat (a backend-ek leírásánál szerepel a módja) és be kell tölteni a "vapor_database" nevű adatbázisba a mintaadatokat.
+
+Lépések:
+1) Frontend konfigurációja (megegyezik mindkét szerver esetében)
+2) Központi backend konfigurációja
+3) Kihelyezett backend konfigurációja
+4) Jitsi konfigurációja
+
+1) Frontend konfigurációja
+
+Ha a backend-ek projektjeiben nem találhatóak a web frontend-hez tartozó statikus erőforrásfájlok, vagy a frontend megváltozott, akkor mindkét frontend esetében szükséges az alábbi lépések végrehajtása. Ellenkező esetben ezek a lépések kihagyhatók.
+
+Lépések:
+- terminál nyitása a frontend projekt gyökérkönyvtárában
+- "npm install" parancs kiadása (függőségek letöltése)
+- "ng build --prod" parancs kiadása (projekt lefordítása)
+- fordítás után a projekt gyökérkönyvtárában a "dist" mappa tartalmazza az összes statikus erőforrást
+- a megfelelő backend projektkönyvtárába navigálva az előzőleg létrehozott "dist" mappából az "index.html" fájlt a "Resources/Views" mappába, minden más fájlt (az almappákkal együtt) a "Public" mappába kell másolni
+
+Ezt követően a backend konfigurációja már tartalmazza a frontend-et, így a backend indítása után elérhető lesz az.
+
+
+2) Központi backend konfigurációja
+
+A projekt gyökérkönyvtárában található ".env" fájlban a következő környezeti változók beállítására van szükség:
+	SSL_DIR: az SSL/TLS tanúsítványt tartalmazó mappa elérési útja
+	SSL_CERT: az SSL/TLS tanúsítvány elérési útja (az SSL_DIR mappán belül, "/" jellel kell kezdődnie)
+  	SSL_KEY: az SSL/TLS tanúsítvány kulcsának elérési útja (az SSL_DIR mappán belül, "/" jellel kell kezdődnie)
+  	SSL_HOSTNAME: a HTTPS kapcsolathoz használt domain név, ami a tanúsítványban szerepel (például: example.com)
+	SMTP_URL: az SMTP szerver URL-je (email küldéséhez szükséges)
+	SMTP_EMAIL: az SMTP szerverre történő bejelentkezéshez az email
+ 	SMTP_PASSWORD: az SMTP szerverre történő bejelentkezéshez a jelszó
+  	JWT_APP_SECRET: JWT token aláírásához szükséges kulcs (256 bites), meg kell, hogy egyezzen a Kihelyezett backend esetén használttal!!
+
+Fontos!
+Ha az SSL_DIR változó nem kap értékül egy valós mappára mutató elérési utat, akkor nem fog elindulni a backend a docker-compose-t használva. A HTTP-re történő rollback-hez bármilyen mappa megadható, a többi SSL_ prefix-szel rendelkező változó beállítására ekkor nincs szükség.
+
+Ezek mellett a projekt gyökérkönyvtárában található "Resources" mappában a "config.json" állomány kitöltése is szükséges a megfelelő konfigurációhoz:
+
+{
+    "adminName": "",                                // adminisztrátor neve
+    "adminEmail": ""                                // az adminisztrátor email címe, ezzel fog tudni az adminisztrátor belépni az adminisztrációs frontend-re (első használat előtt elfelejtett jelszó kérésével lehet jelszót beállítani)
+}
+
+Ezután a következő lépések végrehajtása szükséges:
+- docker-compose build              // projekt fordítása és docker-image elkészítése
+- docker-compose up -d dev_db		// adatbázis indítása
+- docker-compose up -d dev_backend	// szerver alkalmazás indítása
+
+Ezt követően az alapértelmezett beállítás esetén elérhető a backend (és a frontend) a 8080-as, az adatbázis a 5432-es porton.
+
+
+3) Kihelyezett backend konfigurációja
+
+A projekt gyökérkönyvtárában található .env fájlban a következő környezeti változók beállítására van szükség:
+	SSL_DIR: az SSL/TLS tanúsítványt tartalmazó mappa elérési útja
+	SSL_CERT: az SSL/TLS tanúsítvány elérési útja (az SSL_DIR mappán belül, "/" jellel kell kezdődnie)
+  	SSL_KEY: az SSL/TLS tanúsítvány kulcsának elérési útja (az SSL_DIR mappán belül, "/" jellel kell kezdődnie)
+  	SSL_HOSTNAME: a HTTPS kapcsolathoz használt domain név, ami a tanúsítványban szerepel (például: example.com)
+	SMTP_URL: az SMTP szerver URL-je (email küldéséhez szükséges)
+	SMTP_EMAIL: az SMTP szerverre történő bejelentkezéshez az email
+ 	SMTP_PASSWORD: az SMTP szerverre történő bejelentkezéshez a jelszó
+	SERVER_URL: a kihelyezett szerver publikus URL-je (például: https://szerver.com:8888)
+  	JWT_APP_SECRET: JWT token aláírásához szükséges kulcs (256 bites), meg kell, hogy egyezzen a Központi backend esetén használttal!!
+
+Fontos!
+Ha az SSL_DIR változó nem kap értékül egy valós mappára mutató elérési utat, akkor nem fog elindulni a backend a docker-compose-t használva. A HTTP-re történő rollback-hez bármilyen mappa megadható, a többi SSL_ prefix-szel rendelkező változó beállítására ekkor nincs szükség.
+
+Ezek mellett a projekt gyökérkönyvtárában található "Resources" mappában a "config.json" állomány kitöltése is szükséges a megfelelő konfigurációhoz:
+
+{
+    "jitsiUrl": "",                     // a Jitsi videószerver HTTPS-t használó publikus URL-je (porttal együtt)
+    "details": "",                      // a szervezet leírása
+    "defaultContact": {                 // a szervezet alapértelmezett kapcsolattartójának adatai
+        "email": "",
+        "phone": "",
+        "name": ""
+    },
+    "addresses": [                      // a szervezet címei
+        "",
+        ""
+    ],
+    "canClientContactEmployees": true,  // annak engedélyezése/tiltása, hogy az ügyfelek láthatják-e közvetlenül a szervezet alkalmazottainak kontaktjait
+    "name": "",                         // a szervezet neve
+    "clientPersonalInfoFields": [       // azoknak a mezőknek a neve, amelyek azokat az extra adatokat reprezentálják, amikre a szervezetnek szüksége van az ügyfélről (például: Adószám)
+        "",
+        ""
+    ],
+    "admin": {                          // a szervezet adminisztrátorának adatai, ő fog tudni belépni az adminisztrációs frontend-re (első használat előtt elfelejtett jelszó kérésével lehet jelszót beállítani)
+        "email": "",
+        "phone": "",
+        "name": ""
+    }
+}
+
+
+Ezután a következő lépések végrehajtása szükséges:
+- docker-compose build              // projekt fordítása és docker-image elkészítése
+- docker-compose up -d org_db		// adatbázis indítása
+- docker-compose up -d org_backend	// szerver alkalmazás indítása
+
+Ezt követően az alapértelmezett beállítás esetén elérhető a backend (és a frontend) a 8888-as, az adatbázis a 5388-as porton.
+
+Mobilalkalmazás használata esetén a Kihelyezett szerver elérési útját be kell regisztrálni a Központi backend webes felületén.
+
+
+4) Jitsi konfigurációja
+
+A kihelyezett backend tartalmaz egy Jitsi videószervert is. Ennek konfigurációjához el kell navigálni a kihelyezett szerver gyökérkönyvtárában található "Jitsi" mappába, majd ott a következőket beállítani:
+
+Az ".env" fájlt megnyitva az alábbi környezeti változók manuális beállítása kötelező:
+	OWN_CERTS_CERT: az SSL/TLS tanúsítvány elérési útja (az OWN_CERTS_DIR mappán belül, nem kezdődhet "/" jellel)
+    OWN_CERTS_KEY: az SSL/TLS tanúsítvány kulcsának elérési útja (az OWN_CERTS_DIR mappán belül, nem kezdődhet "/" jellel)
+	OWN_CERTS_DIR: az SSL/TLS tanúsítványt tartalmazó mappa elérési útja
+	CONFIG: a videószerver komponenseinek a konfigurációját tartalmazó mappa elérési útvonala (indítás után ide generálódnak a beállítások)
+	HTTP_PORT: a HTTP kapcsolathoz szükséges port (megadása kötelező, de nem lesz ezen keresztül elérhető a webes felület, mivel csak HTTPS-en keresztül működik a video és a hang továbbítása)
+	HTTPS_PORT: a HTTPS kapcsolathoz szükséges port
+	PUBLIC_URL: a videószerver webes felületének a - HTTPS-en keresztül kommunikáló - publikus URL-je, mely a HTTPS portot is tartalmazza (például: https://jitis.com:8071)
+	DOCKER_HOST_ADDRESS: annak a Docker-Engine-nek a host címe, amin el lesz indítva a videószerver
+	JWT_APP_SECRET: a JWT token aláírásának ellenőrzéséhez szükséges kulcs (meg kell, hogy egyezzen a kihelyezett backend JWT_APP_SECRET változójának értékével, mivel csak így fogja tudni hitelesíteni a backend által kiállított token-eket)
+
+Ezután a következő lépés végrehajtása szükséges:
+- docker-compose build              // a Jitsi webes kompoenensének fordítása és docker-image elkészítése (azért szükséges, mert eltér a Jitsi által biztosított image-től ehhez a komponenshez)
+- docker-compose up -d              // a Jitsi komponenseinek indítása
+
+
+Ezt követően a videószerverhez tartozó webes felület elérhető a PUBLIC_URL-en. Az RTP médiafolyam a 4443-as TCP és a 10000-es UDP portot használja. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
